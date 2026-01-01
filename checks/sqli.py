@@ -8,12 +8,32 @@ from bs4 import BeautifulSoup
 
 
 def get_forms():
-    # get the forms from the html page by first fetching it.
-    # Only fields in the white list.
-    # add them to input_fields dictionary which includes injectable fields from whitelist. 
-    # return the input_fields dictionary.
-    # For required fields -> required ? True : False.
-    pass
+    url = input("Enter the url: ")
+    response = requests.get(url)
+    text = response.text 
+    return text
+
+def parse_forms(text):
+    """Text refers to the text returned from the get_forms() function."""
+    soup = BeautifulSoup(text, "html.parser")
+    forms = soup.find_all("form")
+    all_forms_data = [] 
+    for form in forms:
+        input_fields = form.find_all(['input', 'textarea', 'select'])
+        form_data = []
+        for input in input_fields:
+            input_data = {
+                "name": input.get('name'),
+                "type":input.get("type"),
+                "required":input.has_attr('required')
+            }
+            action = form.get('action')
+            method = form.get('method')
+            print(f'form {input} has action:{action} and method: {method}')
+            form_data.append(input_data)
+        all_forms_data.append(form_data)
+    return all_forms_data
+
 
 
 # baseline response -> inject fields one at a time and compare the response with baseline response -> difference ? yes : no 
