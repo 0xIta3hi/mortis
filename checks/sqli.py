@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 # base_line_parameters = {base_line_time, base_line_length, etc}
 # dummy_data = {username, password, email, age, a static dictionary with generic form fields data}
 
-
 def get_forms():
     url = input("Enter the url: ")
     response = requests.get(url)
@@ -43,7 +42,37 @@ def parse_forms(text):
 
 # baseline response -> inject fields one at a time and compare the response with baseline response -> difference ? yes : no 
 # function for the baseline dictionary generation
-def base_response():
+def base_response(text):
+    # get the fields.
+    parsed_fields = parse_forms(text)
+    
+    # assign data to fields.
+    dummy_data = {
+            "username":"admin", 
+            "password":"administrator",
+            "email":"test@gmail.com",
+            "name":"john doe",
+            "age": "24",
+            "phone": "1234567890",
+            "search":"test",
+            "query": "test"
+        }
+    for form in parsed_fields:
+        form_data_to_send = {}
+        for field in form["form_data"]:
+            field_name = field["name"]
+            if field_name in dummy_data:
+                form_data_to_send[field_name] = dummy_data[field_name]
+            else:
+                form_data_to_send[field_name] = "test_value@mail"
+        response = requests.post(form["action"], data=form_data_to_send)
+        print(response)
+
+
+
+    # make a complete payload
+    # send the payload to the url
+    # get response and return response timing, status code, etc.
 
     pass
 
