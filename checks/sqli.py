@@ -70,18 +70,9 @@ def base_response(text):
 
 
 
-    # make a complete payload
-    # send the payload to the url
-    # get response and return response timing, status code, etc.
-
-    pass
-
-
 def sql_injection():
-    # input fields = []
-    # one by one inject different payloads in the input fields.
-    # return the responses per payload..
     pass
+
 
 form_text = get_forms()
 form_data = parse_forms(form_text)
