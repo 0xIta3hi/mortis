@@ -67,7 +67,12 @@ def base_response(text):
                 form_data_to_send[field_name] = "test_value@mail"
         response = requests.post(form["action"], data=form_data_to_send)
         print(response)
-
+        status_code = response.status_code
+        response_time = response.elapsed.total_seconds()
+        content_length_header = response.headers.get('Content-Length')
+        extracted_info = [content_length_header, response_time, status_code]
+        print(extracted_info)
+        return extracted_info
 
 
 def sql_injection():
