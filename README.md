@@ -1,27 +1,37 @@
 
 # Mortis - Web Application Vulnerability Scanner
 
-A Python-based automated vulnerability scanner designed to detect common web application security vulnerabilities including SQL Injection (SQLi) and Cross-Site Scripting (XSS).
+A comprehensive Python-based automated vulnerability scanner designed to detect a wide range of web application security vulnerabilities. Mortis performs in-depth analysis of web applications to identify common attack vectors and security flaws including injection attacks, client-side vulnerabilities, and more.
 
 ## Features
 
-- **SQL Injection Detection**: Automatically detects SQL injection vulnerabilities in web forms
-- **XSS Detection**: Identifies potential Cross-Site Scripting vulnerabilities
+### Vulnerability Detection Modules
+- **SQL Injection (SQLi)**: Detects SQL injection vulnerabilities in web forms through payload injection and response analysis
+- **Cross-Site Scripting (XSS)**: Identifies stored and reflected XSS vulnerabilities in input fields
+- **Extensible Architecture**: Modular design allows easy addition of new vulnerability checks
+
+### Core Capabilities
 - **Automated Form Discovery**: Parses HTML to find and extract all forms from target websites
+- **Intelligent Field Mapping**: Recognizes common field types (username, password, email, search, etc.)
 - **Baseline Response Analysis**: Compares application responses to identify anomalies caused by payload injection
 - **Dynamic Payload Injection**: Tests input fields with malicious payloads to expose vulnerabilities
+- **Time-Based Detection**: Identifies vulnerabilities through response time analysis
+- **Content-Based Detection**: Detects changes in response content from injected payloads
 
 ## Project Structure
 
 ```
 mortis/
-├── Scanner.py           # Main scanner entry point
+├── Scanner.py           # Main scanner entry point & orchestration
 ├── checks/
 │   ├── sqli.py         # SQL Injection detection module
-│   └── xss.py          # Cross-Site Scripting detection module
+│   ├── xss.py          # Cross-Site Scripting detection module
+│   └── [additional modules for other vulnerabilities]
 ├── requirements.txt    # Python dependencies
 └── README.md          # This file
 ```
+
+The `checks/` directory contains modular vulnerability detection modules that can be independently developed and integrated.
 
 ## Installation
 
@@ -67,9 +77,26 @@ The scanner will prompt you to enter the target URL, then automatically:
 - Records response metrics: status codes, content length, response time
 - Uses this baseline to detect anomalies from malicious inputs
 
-### Vulnerability Detection
-- **SQL Injection**: Tests fields with SQL payloads to detect time-based and response-based SQLi
-- **XSS**: Injects JavaScript payloads to identify stored and reflected XSS vulnerabilities
+### Vulnerability Detection Modules
+
+#### SQL Injection (SQLi)
+- Tests fields with SQL payloads to detect time-based and response-based SQLi
+- Analyzes response delays to identify blind SQL injection
+- Compares response content for union-based injection detection
+
+#### Cross-Site Scripting (XSS)
+- Injects JavaScript payloads to identify stored and reflected XSS vulnerabilities
+- Tests various payload encoding methods
+- Detects DOM-based XSS vulnerabilities
+
+#### Additional Vulnerability Checks
+The scanner architecture is designed to support additional vulnerability detection modules including:
+- **CSRF (Cross-Site Request Forgery)**: Identifies missing or weak CSRF token validation
+- **LFI/RFI (Local/Remote File Inclusion)**: Detects file inclusion vulnerabilities
+- **IDOR (Insecure Direct Object References)**: Finds authorization bypass vulnerabilities
+- **Authentication Flaws**: Identifies weak authentication mechanisms
+- **Security Headers**: Analyzes missing security headers
+- And more custom vulnerability checks
 
 ## Disclaimer
 
@@ -81,14 +108,39 @@ This tool is designed for authorized security testing and educational purposes o
 - Comply with all applicable laws and regulations
 - Use responsibly in controlled environments
 
+## Adding New Vulnerability Checks
+
+To extend Mortis with additional vulnerability detection modules:
+
+1. Create a new Python file in the `checks/` directory
+2. Implement vulnerability detection logic following the existing module patterns
+3. Integrate the module into the main Scanner.py orchestration
+4. Add documentation for the new vulnerability type in this README
+
+Example module structure:
+```python
+def detect_vulnerability(forms, baseline_response):
+    """
+    Detect a specific vulnerability type
+    Args:
+        forms: Parsed form data from target website
+        baseline_response: Baseline response metrics
+    Returns:
+        List of detected vulnerabilities
+    """
+    vulnerabilities = []
+    # Implementation here
+    return vulnerabilities
+```
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
+Contributions are welcome! Please feel free to submit issues, pull requests, or new vulnerability detection modules.
+
+## License
+
+[Add your license here]
 
 ## Author
 
 0xIta3hi
-
-
-
-
