@@ -22,7 +22,7 @@ def parse_forms(text):
         action = form.get('action')
         method = form.get('method')
         form_field = []
-        input_fields = form.find_all(['input', 'textarea', 'submit'])
+        input_fields = form.find_all(['input', 'textarea'])
         for field in input_fields:
             input_data = {
                 "name":field.get('name'),
@@ -65,7 +65,12 @@ def base_response(text):
                 form_data_to_send[field_name] = dummy_data[field_name]
             else:
                 form_data_to_send[field_name] = "test_value@mail"
-        response = requests.post(form["action"], data=form_data_to_send)
+        try:
+            if action == None:
+                print('[+] No action found in the given Form')
+            response = requests.post(form["action"], data=form_data_to_send)
+        except Exception as e:
+            print(f"Error occured while making request : {e}")
         print(response)
         status_code = response.status_code
         response_time = response.elapsed.total_seconds()
@@ -77,8 +82,3 @@ def base_response(text):
 
 def sql_injection():
     pass
-
-
-form_text = get_forms()
-form_data = parse_forms(form_text)
-print(form_data)
