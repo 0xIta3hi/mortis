@@ -66,8 +66,6 @@ def base_response(text):
             else:
                 form_data_to_send[field_name] = "test_value@mail"
         try:
-            if action == None:
-                print('[+] No action found in the given Form')
             response = requests.post(form["action"], data=form_data_to_send)
         except Exception as e:
             print(f"Error occured while making request : {e}")
@@ -79,6 +77,5 @@ def base_response(text):
         print(extracted_info)
         return extracted_info
 
-
 def sql_injection():
-    pass
+# flow: Get base line for each form, inject payload in to 1 field at a time keep others with dummy data, then after each form, store the result in a list with format: [{form1_baseline:[base line for form one], form1_sql_payload:[after itirating through all fields then returns are stored here]}] compare these findings, then return the findings.
