@@ -77,5 +77,13 @@ def base_response(text):
         print(extracted_info)
         return extracted_info
 
-def sql_injection():
+def sql_injection(extracted_info):
+    # step 1 get the fields of the forms.
+    
+    # step 2: inject payload in a field.
+    # step 3: get the baseline response for the form.
+    # step 4: compare it to the injected field form.
+    # check for sqli injection error phrases in the response. 
+    # if the phrases exsists and the parameters like status code, content-length, and response time, have quite some difference return this field.
+    # print all such field, do not add it to any array or anything just start printing the field with the form whose field is vulnerable.
 # flow: Get base line for each form, inject payload in to 1 field at a time keep others with dummy data, then after each form, store the result in a list with format: [{form1_baseline:[base line for form one], form1_sql_payload:[after itirating through all fields then returns are stored here]}] compare these findings, then return the findings.
