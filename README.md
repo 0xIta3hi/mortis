@@ -132,7 +132,7 @@ Contributions are welcome! Please feel free to submit issues, pull requests, or 
 
 ## License
 
-[Add your license here]
+MIT
 
 ## Author
 
