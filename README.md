@@ -7,7 +7,6 @@ A comprehensive Python-based automated vulnerability scanner designed to detect 
 
 ### Vulnerability Detection Modules
 - **SQL Injection (SQLi)**: Detects SQL injection vulnerabilities in web forms through payload injection and response analysis
-- **Cross-Site Scripting (XSS)**: Identifies stored and reflected XSS vulnerabilities in input fields
 - **Extensible Architecture**: Modular design allows easy addition of new vulnerability checks
 
 ### Core Capabilities
@@ -25,7 +24,6 @@ mortis/
 ├── Scanner.py           # Main scanner entry point & orchestration
 ├── checks/
 │   ├── sqli.py         # SQL Injection detection module
-│   ├── xss.py          # Cross-Site Scripting detection module
 │   └── [additional modules for other vulnerabilities]
 ├── requirements.txt    # Python dependencies
 └── README.md          # This file
@@ -83,11 +81,6 @@ The scanner will prompt you to enter the target URL, then automatically:
 - Tests fields with SQL payloads to detect time-based and response-based SQLi
 - Analyzes response delays to identify blind SQL injection
 - Compares response content for union-based injection detection
-
-#### Cross-Site Scripting (XSS)
-- Injects JavaScript payloads to identify stored and reflected XSS vulnerabilities
-- Tests various payload encoding methods
-- Detects DOM-based XSS vulnerabilities
 
 #### Additional Vulnerability Checks
 The scanner architecture is designed to support additional vulnerability detection modules including:
